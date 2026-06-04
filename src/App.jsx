@@ -400,7 +400,7 @@ function MyTracker(){
 }
 
 function CoachDashboard(){
-  const [note,setNote]=useState("");
+  const [selectedCheckIn,setSelectedCheckIn]=useState(null);
   const [checkins,setCheckins]=useState([]);
   useEffect(()=>{
     supabase.from('checkins').select('*,profiles(full_name,email,check_in_type)').order('created_at',{ascending:false}).limit(20)
@@ -416,27 +416,27 @@ function CoachDashboard(){
         <div>
           <ST>Recent Check-Ins</ST>
           {checkins.slice(0,10).map((c,i)=>(
-            <div key={i} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:11,padding:"12px 14px",marginBottom:8}}>
-              <div style={{fontSize:13,fontWeight:700,color:C.text}}>{c.profiles?.full_name||c.profiles?.email}</div>
-              <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>{c.check_in_type} · {new Date(c.created_at).toLocaleDateString()}</div>
-              {c.data?.weight&&<div style={{fontSize:11,color:C.accentBright,marginTop:4}}>Weight: {c.data.weight} lbs</div>}
-              {c.data?.training&&<div style={{fontSize:11,color:C.textMuted,marginTop:2}}>Training: {c.data.training}</div>}
-            </div>
-          ))}
-        </div>
-      ):(
-        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:24,textAlign:"center"}}>
-          <div style={{fontSize:13,color:C.textMuted}}>No check-ins yet. Share your app link with clients to get started.</div>
-        </div>
-      )}
-      <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:16}}>
-        <ST>Coach Notes</ST>
-        <TA value={note} onChange={setNote} placeholder="Add coaching notes..." rows={4}/>
-        <button style={{marginTop:12,width:"100%",padding:"13px 0",background:C.accent,border:"none",borderRadius:10,color:"#fff",fontSize:13,fontWeight:800,cursor:"pointer"}}>SEND FEEDBACK</button>
+  <div key={i} onClick={()=>setSelectedCheckIn(selectedCheckIn===i?null:i)}
+    style={{background:C.card,border:`1px solid ${selectedCheckIn===i?C.accent:C.border}`,borderRadius:11,padding:"12px 14px",marginBottom:8,cursor:"pointer"}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div>
+        <div style={{fontSize:13,fontWeight:700,color:C.text}}>{c.profiles?.full_name||c.profiles?.email}</div>
+        <div style={{fontSize:11,color:C.textMuted,marginTop:2}}>{c.check_in_type} · {new Date(c.created_at).toLocaleDateString()}</div>
       </div>
+      <div style={{fontSize:12,color:C.textDim}}>{selectedCheckIn===i?'▲':'▼'}</div>
     </div>
-  );
-}
+    {selectedCheckIn===i&&(
+      <div style={{marginTop:12,paddingTop:12,borderTop:`1px solid ${C.border}`}}>
+        {Object.entries(c.data||{}).filter(([k,v])=>v!==null&&v!==''&&v!==undefined).map(([k,v])=>(
+          <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:`1px solid ${C.border}`}}>
+            <span style={{fontSize:11,color:C.textMuted,textTransform:"capitalize"}}>{k.replace(/([A-Z])/g,' $1').trim()}</span>
+            <span style={{fontSize:11,color:C.text,fontWeight:600,maxWidth:"60%",textAlign:"right"}}>{Array.isArray(v)?v.join(', '):String(v)}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+))}
 
 function TrendsView(){
   const weeks=["W8","W9","W10","W11","W12","W13","W14"];
