@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from './supabase';
 
 const C = {
   bg:"#09090c",surface:"#111217",card:"#15171f",border:"#1d2030",
@@ -666,3 +667,4 @@ export default function App(){
     </div>
   </div>;
 }
+
