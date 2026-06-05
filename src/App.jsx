@@ -477,7 +477,7 @@ function CoachDashboard(){
   useEffect(()=>{
     supabase
       .from("checkins")
-      .select("*, profiles!checkins_client_id_fkey(full_name,email,check_in_type)")
+      .select("*, profiles(full_name,email,check_in_type)")
       .order("created_at",{ascending:false})
       .limit(20)
       .then(({data,error})=>{
@@ -701,3 +701,4 @@ export default function App(){
     </div>
   );
 }
+
