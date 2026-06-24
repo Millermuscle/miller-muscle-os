@@ -612,7 +612,6 @@ export default function App(){
   const loadUserRole=async(userId)=>{
     const {data}=await supabase.from("profiles").select("role").eq("id",userId).single();
     if(data)setUserRole(data.role);
-    else setUserRole("client");
   };
 
   const handleLogout=async()=>{
@@ -647,7 +646,6 @@ export default function App(){
   };
 
   if(!session)return <AuthScreen mode={authMode} setMode={setAuthMode}/>;
-  if(session && userRole===null)return <div style={{minHeight:"100vh",background:"#09090c",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:"#4a7bff",fontSize:14}}>Loading...</div></div>;
   if(session && userRole===null)return <div style={{minHeight:"100vh",background:"#09090c",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:"#4a7bff",fontSize:14}}>Loading...</div></div>;
   if(userRole==="client"){
     return(
